@@ -11,39 +11,6 @@ export function isValidNumber(number, length) {
   return isDigitsOnly(number) && number.length === length;
 }
 
-export function calculateCorrectDigits(secretNumber, guessedNumber) {
-  let exactMatches = 0;
-  const matchedSecretIndices = new Set();
-  const matchedGuessIndices = new Set();
-  
-  for (let i = 0; i < secretNumber.length; i++) {
-    if (secretNumber[i] === guessedNumber[i]) {
-        exactMatches++;
-        matchedSecretIndices.add(i);
-        matchedGuessIndices.add(i);
-    }
-  }
-  
-  let wrongPositionMatches = 0;
-  
-  for (let i = 0; i < guessedNumber.length; i++) {
-    if (matchedGuessIndices.has(i)) 
-        continue;
-    
-    for (let j = 0; j < secretNumber.length; j++) {
-      if (matchedSecretIndices.has(j)) 
-        continue;
-      
-      if (guessedNumber[i] === secretNumber[j]) {
-        wrongPositionMatches++;
-        matchedSecretIndices.add(j);
-        break;
-      }
-    }
-  }
-  
-  return exactMatches + wrongPositionMatches;
-}
 export function calculateExactMatches(secretNumber, guessedNumber) {
   let exactMatches = 0;
   for (let i = 0; i < secretNumber.length; i++) {
