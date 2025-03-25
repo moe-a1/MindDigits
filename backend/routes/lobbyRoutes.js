@@ -23,6 +23,7 @@ router.post('/create-lobby', async (req, res) => {
     const newLobby = await lobby.save();
     res.status(201).json(newLobby);
   } catch (err) {
+    console.error('Error creating lobby:', err);
     res.status(400).json({ message: err.message });
   }
 });
@@ -37,6 +38,7 @@ router.get('/:id', async (req, res) => {
     
     res.status(200).json(lobby);
   } catch (err) {
+    console.error('Error fetching lobby:', err);
     res.status(500).json({ message: err.message });
   }
 });
