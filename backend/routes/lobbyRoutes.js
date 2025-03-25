@@ -1,6 +1,6 @@
 import express from 'express';
 import Lobby from '../models/Lobby.js';
-import { calculateCorrectDigits, calculateExactMatches, generateLobbyId, isValidNumber, getActivePlayers } from '../utils/utils.js';
+import { calculateExactMatches, generateLobbyId, isValidNumber, getActivePlayers } from '../utils/utils.js';
 
 const router = express.Router();
 
@@ -119,14 +119,13 @@ router.post('/guess-number', async (req, res) => {
       return res.status(400).json({ message: `Guess must be ${lobby.numberLength} digits` });
     }
     
-    const correctDigits = calculateCorrectDigits(targetPlayer.number, guessedNumber);
     const exactMatches = calculateExactMatches(targetPlayer.number, guessedNumber);
     
     const newGuess = {
       fromPlayer,
       toPlayer,
       guessedNumber,
-      correctDigits
+      exactMatches
     };
     
     lobby.guesses.push(newGuess);
@@ -146,7 +145,6 @@ router.post('/guess-number', async (req, res) => {
     await lobby.save();
     
     res.json({
-      correctDigits,
       exactMatches,
       isCorrect: exactMatches === lobby.numberLength,
       gameStatus: lobby.gameStatus,
