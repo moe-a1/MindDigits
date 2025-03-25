@@ -83,8 +83,7 @@ router.post('/submit-number', async (req, res) => {
     lobby.players[playerIndex].number = number;
     lobby.players[playerIndex].status = 'ready';
     
-    const allReady = lobby.players.every(p => p.status === 'ready');
-    if (allReady && lobby.players.length >= 2) {
+    if (allPlayersReady(lobby)) {
       lobby.gameStatus = 'active';
       lobby.players.forEach(p => { p.status = 'playing'; });
     }
