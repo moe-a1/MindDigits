@@ -1,5 +1,6 @@
-import { calculateExactMatches, allPlayersReady, isValidNumber } from '../utils/utils.js';
-import { findLobby, emitToLobby, emitSystemMessage, handleError, startGame, eliminatePlayer, disconnectPlayer } from '../utils/socketUtils.js';
+import { calculateExactMatches, isValidNumber, allPlayersReady } from '../utils/gameUtils.js';
+import { findLobby, startGame, eliminatePlayer, disconnectPlayer } from '../utils/lobbyUtils.js';
+import { emitToLobby, emitSystemMessage, handleError } from '../utils/socketUtils.js';
 
 export default function setupSocketHandlers(io) {
   const activeConnections = {};
