@@ -1,6 +1,6 @@
 import express from 'express';
 import Lobby from '../models/Lobby.js';
-import { generateLobbyId } from '../utils/utils.js';
+import { generateLobbyId } from '../utils/gameUtils.js';
 
 const router = express.Router();
 
