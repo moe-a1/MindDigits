@@ -1,4 +1,3 @@
-/* Lobby.css - Styling for the lobby page */
 .lobby-container {
   min-height: 100vh;
   background: linear-gradient(135deg, #121212 0%, #2d3748 100%);
@@ -155,19 +154,19 @@
 }
 
 .player-item.waiting {
-  border-left: 4px solid #f6ad55; /* Orange */
+  border-left: 4px solid #f6ad55;
 }
 
 .player-item.ready {
-  border-left: 4px solid #68d391; /* Green */
+  border-left: 4px solid #68d391;
 }
 
 .player-item.playing {
-  border-left: 4px solid #4fd1c5; /* Teal */
+  border-left: 4px solid #4fd1c5;
 }
 
 .player-item.eliminated {
-  border-left: 4px solid #fc8181; /* Red */
+  border-left: 4px solid #fc8181;
   opacity: 0.7;
 }
 
