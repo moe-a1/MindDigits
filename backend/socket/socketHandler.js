@@ -1,6 +1,7 @@
-import { calculateExactMatches, isValidNumber, allPlayersReady } from '../utils/gameUtils.js';
+import { calculateExactMatches, isValidNumber, allPlayersReady, generateLobbyId } from '../utils/gameUtils.js';
 import { findLobby, startGame, eliminatePlayer, disconnectPlayer } from '../utils/lobbyUtils.js';
 import { emitToLobby, emitSystemMessage, handleError } from '../utils/socketUtils.js';
+import Lobby from '../models/Lobby.js';
 
 export default function setupSocketHandlers(io) {
   const activeConnections = {};
@@ -8,6 +9,28 @@ export default function setupSocketHandlers(io) {
   io.on('connection', (socket) => {
     console.log('New client connected:', socket.id);
     activeConnections[socket.id] = { connected: true };
+
+    socket.on('createLobby', async ({ name, createdBy, numberLength = 4 }) => {
+      try {
+        if (!name || !createdBy) {
+          handleError(socket, 'Name and creator are required');
+          return;
+        }
+        
+        const lobby = new Lobby({
+          lobbyId: generateLobbyId(),
+          name,
+          createdBy,
+          numberLength,
+          players: []
+        });
+        
+        const newLobby = await lobby.save();
+        socket.emit('lobbyCreated', newLobby.toObject());
+      } catch (err) {
+        handleError(socket, 'Failed to create lobby', err);
+      }
+    });
 
     socket.on('joinLobby', async ({ lobbyId, username }) => {
       try {
@@ -26,6 +49,17 @@ export default function setupSocketHandlers(io) {
         socket.emit('lobbyData', { ...lobby.toObject() });
       } catch (err) {
         handleError(socket, 'Failed to join lobby', err);
+      }
+    });
+    
+    socket.on('getLobby', async ({ lobbyId }) => {
+      try {
+        const lobby = await findLobby(socket, lobbyId);
+        if (!lobby) return;
+        
+        socket.emit('lobbyData', { ...lobby.toObject() });
+      } catch (err) {
+        handleError(socket, 'Failed to get lobby data', err);
       }
     });
 
