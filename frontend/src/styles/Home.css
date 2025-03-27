@@ -113,6 +113,14 @@
   color: #718096;
 }
 
+.input-help {
+  display: block;
+  font-size: 0.8rem;
+  color: #a0aec0;
+  margin-top: 5px;
+  font-style: italic;
+}
+
 .submit-btn {
   width: 100%;
   padding: 14px;

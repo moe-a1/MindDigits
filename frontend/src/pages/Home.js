@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGame } from '../context/GameContext';
 import '../styles/Home.css';
@@ -11,6 +11,18 @@ function Home() {
   const [lobbyId, setLobbyId] = useState('');
   const [selectedTab, setSelectedTab] = useState('create');
   const [numberLength, setNumberLength] = useState(4);
+  const [userEditedLobbyName, setUserEditedLobbyName] = useState(false);
+
+  useEffect(() => {
+    if (username && !userEditedLobbyName) {
+      setLobbyName(`${username}'s Lobby`);
+    }
+  }, [username, userEditedLobbyName]);
+
+  const onLobbyNameChange = (e) => {
+    setLobbyName(e.target.value);
+    setUserEditedLobbyName(true);
+  };
 
   const onCreateLobbyClick = async (e) => {
     e.preventDefault();
@@ -62,7 +74,7 @@ function Home() {
                 </div>
                 <div className="form-group">
                   <label htmlFor="lobbyName">Lobby Name</label>
-                  <input type="text" id="lobbyName" value={lobbyName} onChange={(e) => setLobbyName(e.target.value)}
+                  <input type="text" id="lobbyName" value={lobbyName} onChange={onLobbyNameChange}
                     placeholder="Enter lobby name" required/>
                 </div>
                 <div className="form-group">
@@ -74,7 +86,7 @@ function Home() {
                     <option value="6">6 Digits</option>
                   </select>
                 </div>
-                <button type="submit" className="submit-btn" disabled={loading}>
+                <button type="submit" className="submit-btn" disabled={loading || !username}>
                   {loading ? 'Creating...' : 'Create Lobby'}
                 </button>
               </form>
