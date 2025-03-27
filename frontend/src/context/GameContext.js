@@ -79,6 +79,16 @@ export function GameProvider({ children }) {
     }
   };
 
+  const leaveLobby = () => {
+    setLobbyData(null);
+    setPlayers([]);
+    setMessages([]);
+
+    if (socket && lobbyData) {
+      socket.emit('leaveLobby', { lobbyId: lobbyData.lobbyId, username });
+    }
+  };
+
   const sendChatMessage = (message) => {
     if (!socket || !lobbyData) return;
     socket.emit('sendChatMessage', { lobbyId: lobbyData.lobbyId, message: message });
@@ -105,7 +115,7 @@ export function GameProvider({ children }) {
     lobbyData, setLobbyData,
     loading, error,
     players, messages,
-    createLobby, joinLobby, sendChatMessage
+    createLobby, joinLobby, leaveLobby, sendChatMessage
   };
 
   return (
