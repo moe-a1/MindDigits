@@ -76,6 +76,7 @@ function Home() {
                   <label htmlFor="lobbyName">Lobby Name</label>
                   <input type="text" id="lobbyName" value={lobbyName} onChange={onLobbyNameChange}
                     placeholder="Enter lobby name" required/>
+                  <small className="input-help">Automatically updates based on username, but you can customize it</small>
                 </div>
                 <div className="form-group">
                   <label htmlFor="numberLength">Number Length</label>
