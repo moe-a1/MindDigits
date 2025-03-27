@@ -102,6 +102,21 @@ export default function setupSocketHandlers(io) {
       }
     });
 
+    socket.on('leaveLobby', async ({ lobbyId, username }) => {
+      try {
+        const userData = { lobbyId, username };
+        
+        await disconnectPlayer(io, userData);
+        
+        if (activeConnections[socket.id])
+          activeConnections[socket.id] = { connected: true, username: username};
+        
+        socket.leave(`lobby:${lobbyId}`);
+      } catch (err) {
+        handleError(socket, 'Failed to leave lobby', err);
+      }
+    });
+
     socket.on('sendChatMessage', ({ lobbyId, message }) => {
       const userData = activeConnections[socket.id];
       if (!userData || !userData.username || !lobbyId) return;
