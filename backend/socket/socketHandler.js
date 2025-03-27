@@ -50,7 +50,7 @@ export default function setupSocketHandlers(io) {
         
         await lobby.save();
         
-        emitToLobby(io, lobbyId, 'playerReady', { username, players: lobby.players});
+        emitToLobby(io, lobbyId, 'playerReady', { username, players: lobby.players });
         
         if (allPlayersReady(lobby)) 
           startGame(io, lobby);
