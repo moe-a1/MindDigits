@@ -22,10 +22,15 @@ export default function setupSocketHandlers(io) {
           name,
           createdBy,
           numberLength,
-          players: []
+          players: [{ username: createdBy, status: 'waiting' }]
         });
         
         const newLobby = await lobby.save();
+        
+        activeConnections[socket.id] = { ...activeConnections[socket.id], lobbyId: lobby.lobbyId, username: createdBy };
+        
+        socket.join(`lobby:${lobby.lobbyId}`);
+                
         socket.emit('lobbyCreated', newLobby.toObject());
       } catch (err) {
         handleError(socket, 'Failed to create lobby', err);

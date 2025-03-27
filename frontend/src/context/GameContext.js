@@ -24,6 +24,7 @@ export function GameProvider({ children }) {
       const data = await setupCreateLobbyListeners(socket, { name: lobbyName, createdBy: username, numberLength });
 
       setLobbyData(data);
+      setPlayers(data.players || []);
       return data;
     } catch (err) {
       setError(err.message || 'Failed to create lobby');
