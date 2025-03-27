@@ -17,7 +17,7 @@ router.post('/create-lobby', async (req, res) => {
       name,
       createdBy,
       numberLength,
-      players: [{ username: createdBy }]
+      players: []
     });
     
     const newLobby = await lobby.save();
