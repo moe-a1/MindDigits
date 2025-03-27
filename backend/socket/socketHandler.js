@@ -22,6 +22,7 @@ export default function setupSocketHandlers(io) {
         
         emitToLobby(io, lobbyId, 'playerJoinedLobby', { username, players: lobby.players });
         emitSystemMessage(io, lobbyId, 'playerJoined', `${username} has joined the lobby`);
+        
         socket.emit('lobbyData', { ...lobby.toObject() });
       } catch (err) {
         handleError(socket, 'Failed to join lobby', err);
