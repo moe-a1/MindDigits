@@ -1,0 +1,329 @@
+/* Lobby.css - Styling for the lobby page */
+.lobby-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #121212 0%, #2d3748 100%);
+  color: #e2e8f0;
+  padding: 20px;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #121212 0%, #2d3748 100%);
+  color: #e2e8f0;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  border-top-color: #4fd1c5;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.lobby-header {
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  margin-bottom: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.lobby-header h1 {
+  margin: 0 0 15px 0;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.lobby-info {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: center;
+}
+
+.lobby-id-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.label {
+  font-size: 0.9rem;
+  color: #a0aec0;
+}
+
+.lobby-id {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #4fd1c5;
+  letter-spacing: 1px;
+  background: rgba(79, 209, 197, 0.1);
+  padding: 5px 10px;
+  border-radius: 4px;
+}
+
+.copy-button {
+  background: #4fd1c5;
+  color: #1a202c;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.copy-button:hover {
+  background: #38b2ac;
+}
+
+.game-settings {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.value {
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.lobby-content {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.players-list, .game-area, .chat-area {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.players-list {
+  grid-row: span 2;
+}
+
+.players-list h2, .chat-area h2, .game-area h2 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+  color: #4fd1c5;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 10px;
+}
+
+.players-list ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.player-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  margin-bottom: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.player-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.player-item.waiting {
+  border-left: 4px solid #f6ad55; /* Orange */
+}
+
+.player-item.ready {
+  border-left: 4px solid #68d391; /* Green */
+}
+
+.player-item.playing {
+  border-left: 4px solid #4fd1c5; /* Teal */
+}
+
+.player-item.eliminated {
+  border-left: 4px solid #fc8181; /* Red */
+  opacity: 0.7;
+}
+
+.player-name {
+  font-weight: 600;
+}
+
+.player-status {
+  font-size: 0.8rem;
+  padding: 3px 8px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  text-transform: capitalize;
+}
+
+.game-status {
+  margin-bottom: 20px;
+}
+
+.game-status h2 {
+  text-transform: capitalize;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.main-action-button {
+  background: #4fd1c5;
+  color: #1a202c;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.main-action-button:hover {
+  background: #38b2ac;
+  transform: translateY(-2px);
+}
+
+.leave-button {
+  background: #fc8181;
+  color: #1a202c;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-left: auto;
+}
+
+.leave-button:hover {
+  background: #e53e3e;
+}
+
+.messages-container {
+  height: 250px;
+  overflow-y: auto;
+  margin-bottom: 15px;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+}
+
+.no-messages {
+  color: #a0aec0;
+  text-align: center;
+  padding: 20px;
+  font-style: italic;
+}
+
+.message {
+  margin-bottom: 10px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  word-break: break-word;
+  max-width: 85%;
+}
+
+.system-message {
+  background: rgba(79, 209, 197, 0.1);
+  color: #4fd1c5;
+  font-style: italic;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  max-width: 90%;
+}
+
+.chat-message {
+  background: rgba(255, 255, 255, 0.1);
+  margin-right: auto;
+}
+
+.own-message {
+  background: rgba(79, 209, 197, 0.2);
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.sender {
+  font-weight: 600;
+  margin-right: 5px;
+  color: #4fd1c5;
+}
+
+.chat-input {
+  display: flex;
+  gap: 10px;
+}
+
+.chat-input input {
+  flex: 1;
+  padding: 12px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-size: 1rem;
+}
+
+.chat-input input:focus {
+  outline: none;
+  border-color: #4fd1c5;
+}
+
+.chat-input button {
+  background: #4fd1c5;
+  color: #1a202c;
+  border: none;
+  border-radius: 8px;
+  padding: 0 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.chat-input button:hover {
+  background: #38b2ac;
+}
+
+/* Media Queries for Responsive Design */
+@media (max-width: 992px) {
+  .lobby-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .players-list {
+    grid-row: auto;
+  }
+}

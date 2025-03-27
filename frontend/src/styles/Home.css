@@ -1,0 +1,160 @@
+/* Home.css - Styling for the home/login page */
+.home-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #121212 0%, #2d3748 100%);
+  padding: 20px;
+}
+
+.home-content {
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+
+.logo-container {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.game-title {
+  font-size: 3.5rem;
+  font-weight: 900;
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(79, 209, 197, 0.5);
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+.game-title span {
+  color: #4fd1c5;
+}
+
+.game-tagline {
+  font-size: 1.2rem;
+  color: #e2e8f0;
+  margin-top: 8px;
+}
+
+.card {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tabs {
+  display: flex;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tab {
+  flex: 1;
+  padding: 16px;
+  font-size: 1rem;
+  font-weight: 600;
+  background: none;
+  border: none;
+  color: #a0aec0;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tab:hover {
+  color: #4fd1c5;
+}
+
+.tab.active {
+  color: #4fd1c5;
+  border-bottom: 3px solid #4fd1c5;
+}
+
+.card-content {
+  padding: 30px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 0.9rem;
+  color: #e2e8f0;
+  font-weight: 500;
+}
+
+.form-group input, .form-group select {
+  width: 100%;
+  padding: 14px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus, .form-group select:focus {
+  outline: none;
+  border-color: #4fd1c5;
+  box-shadow: 0 0 0 2px rgba(79, 209, 197, 0.3);
+}
+
+.form-group input::placeholder {
+  color: #718096;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 14px;
+  background: #4fd1c5;
+  color: #1a202c;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+}
+
+.submit-btn:hover {
+  background: #38b2ac;
+  transform: translateY(-2px);
+}
+
+.submit-btn:disabled {
+  background: #718096;
+  cursor: not-allowed;
+  transform: translateY(0);
+}
+
+.error-message {
+  margin-top: 20px;
+  padding: 10px;
+  border-radius: 6px;
+  background: rgba(245, 101, 101, 0.2);
+  color: #fc8181;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+@media (max-width: 600px) {
+  .game-title {
+    font-size: 2.5rem;
+  }
+  
+  .card-content {
+    padding: 20px;
+  }
+}
