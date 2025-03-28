@@ -18,24 +18,16 @@ export async function findLobby(socket, lobbyId) {
 }
 
 export async function startGame(io, lobby) {
-    try {
-        console.log("Starting game for lobby:", lobby.lobbyId);
+    lobby.gameStatus = 'active';
+    lobby.players.forEach(p => { 
+        if (p.status === 'ready') {
+            p.status = 'playing';
+        }
+    });
 
-        lobby.gameStatus = 'active';
-        lobby.players.forEach(p => { 
-            if (p.status === 'ready') {
-                p.status = 'playing';
-            }
-        });
+    lobby.guesses = [];
 
-        await lobby.save();
-
-        emitToLobby(io, lobby.lobbyId, 'gameStarted', { lobby });
-        emitSystemMessage(io, lobby.lobbyId, 'gameStarted', 'The game has started!');
-    } catch (error) {
-        console.error("Error starting game:", error);
-        emitToLobby(io, lobby.lobbyId, 'error', { message: 'Failed to start the game. Please try again.' });
-    }
+    await lobby.save();
 }
 export function eliminatePlayer(io, lobby, fromPlayer, toPlayer, guessedNumber) {
     const targetIndex = lobby.players.findIndex(p => p.username === toPlayer);

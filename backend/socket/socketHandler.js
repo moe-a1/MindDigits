@@ -45,9 +45,16 @@ export default function setupSocketHandlers(io) {
         activeConnections[socket.id] = { ...activeConnections[socket.id], lobbyId, username };
 
         socket.join(`lobby:${lobbyId}`);
-        lobby.players.push({ username, status: 'waiting'});
-        await lobby.save();
         
+        if (lobby.gameStatus === 'active') {
+          lobby.players.push({ username, status: 'spectator'});
+          await lobby.save();
+        } 
+        else {
+          lobby.players.push({ username, status: 'waiting'});
+          await lobby.save();
+        }
+
         emitToLobby(io, lobbyId, 'playerJoinedLobby', { username, players: lobby.players });
         emitSystemMessage(io, lobbyId, 'playerJoined', `${username} has joined the lobby`);
         
@@ -68,7 +75,7 @@ export default function setupSocketHandlers(io) {
       }
     });
 
-    socket.on('submitNumber', async ({ lobbyId, username, number }) => {
+    socket.on('submitSecretNumber', async ({ lobbyId, username, number }) => {
       try {
         const lobby = await findLobby(socket, lobbyId);
         if (!lobby) return;
@@ -91,13 +98,34 @@ export default function setupSocketHandlers(io) {
         
         emitToLobby(io, lobbyId, 'playerReady', { username, players: lobby.players });
         
-        if (allPlayersReady(lobby)) 
-          startGame(io, lobby);
+        if (allPlayersReady(lobby)) {
+          socket.emit('allPlayersReady', { lobbyId });
+        }
       } catch (err) {
         handleError(socket, 'Failed to submit number', err);
       }
     });
 
+    socket.on('startGame', async ({ lobbyId }) => {
+      try {
+        const lobby = await findLobby(socket, lobbyId);
+        if (!lobby) return;
+        
+        const initializeStatus = initializeTurnSystem(lobby);
+        
+        if (!initializeStatus) {
+          socket.emit('error', { message: 'Failed to initialize game turns' });
+          return;
+        }
+        
+        await startGame(io, lobby);
+        
+        emitToLobby(io, lobbyId, 'gameStarted', { players: lobby.players, currentTurn: lobby.currentTurn,targetPlayer: lobby.targetPlayer });
+        emitSystemMessage(io, lobbyId, 'gameStarted', `The game has started! ${lobby.targetPlayer}'s number is being targeted. It's ${lobby.currentTurn}'s turn to make a guess.`);
+      } catch (err) {
+        handleError(socket, 'Failed to start game', err);
+      }
+    });
     socket.on('makeGuess', async ({ lobbyId, fromPlayer, toPlayer, guessedNumber }) => {
       try {
         const lobby = await findLobby(socket, lobbyId);
