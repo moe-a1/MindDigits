@@ -1,5 +1,5 @@
-import { calculateExactMatches, isValidNumber, allPlayersReady, generateLobbyId } from '../utils/gameUtils.js';
-import { findLobby, startGame, eliminatePlayer, disconnectPlayer } from '../utils/lobbyUtils.js';
+import { isValidNumber, allPlayersReady, generateLobbyId, initializeTurnSystem } from '../utils/gameUtils.js';
+import { findLobby, disconnectPlayer, startGame, handlePlayerGuess } from '../utils/lobbyUtils.js';
 import { emitToLobby, emitSystemMessage, handleError } from '../utils/socketUtils.js';
 import Lobby from '../models/Lobby.js';
 
@@ -162,32 +162,24 @@ export default function setupSocketHandlers(io) {
           return;
         }
         
-        const exactMatches = calculateExactMatches(targetPlayer.number, guessedNumber);
-        const isCorrect = exactMatches === lobby.numberLength;
+        const result = await handlePlayerGuess(io, lobby, fromPlayer, toPlayer, guessedNumber);
         
-        const newGuess = {
-          fromPlayer,
-          toPlayer,
-          guessedNumber,
-          exactMatches
-        };
-        
-        lobby.guesses.push(newGuess);
-        
-        if (isCorrect) {
-          eliminatePlayer(io, lobby, fromPlayer, toPlayer, guessedNumber);
+        if (result.error) {
+          socket.emit('error', { message: result.error });
+          return;
         }
         
         await lobby.save();
         
-        emitToLobby(io, lobbyId, 'guessResult', { guess: newGuess, exactMatches, isCorrect,
-          players: lobby.players, gameStatus: lobby.gameStatus
+        emitToLobby(io, lobbyId, 'guessResult', { 
+          guess: result.guess, 
+          exactMatches: result.exactMatches, 
+          isCorrect: result.isCorrect,
+          currentTurn: lobby.currentTurn,
+          targetPlayer: lobby.targetPlayer,
+          players: lobby.players, 
+          gameStatus: lobby.gameStatus
         });
-        
-        if (!isCorrect) {
-          emitSystemMessage(io, lobbyId, 'guessResult', 
-            `${fromPlayer} guessed ${exactMatches} correct digits in correct position in ${toPlayer}'s number.`);
-        }
       } catch (err) {
         handleError(socket, 'Failed to process guess', err);
       }

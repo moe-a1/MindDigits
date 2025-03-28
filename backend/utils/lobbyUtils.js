@@ -1,6 +1,6 @@
 import Lobby from '../models/Lobby.js';
-import { isGameOver, getWinner } from './gameUtils.js';
-import { emitToLobby, emitSystemMessage, formatTimestamp } from './socketUtils.js';
+import { isGameOver, getWinner, advanceToNextTurn, calculateExactMatches } from './gameUtils.js';
+import { emitToLobby, emitSystemMessage } from './socketUtils.js';
 
 export async function findLobby(socket, lobbyId) {
     if (!lobbyId) {
@@ -75,5 +75,36 @@ export function endGame(io, lobby) {
 
     emitToLobby(io, lobby.lobbyId, 'gameOver', { winner, lobby });
     emitSystemMessage(io, lobby.lobbyId, 'gameOver', winner ? `Game over! ${winner} is the winner!` : 'Game over! No players remain.');
+}
+
+export async function handlePlayerGuess(io, lobby, fromPlayer, toPlayer, guessedNumber) {
+    try {
+        const targetPlayer = lobby.players.find(p => p.username === toPlayer);
+        const exactMatches = calculateExactMatches(targetPlayer.number, guessedNumber);
+        const isCorrect = exactMatches === lobby.numberLength;
+        
+        const newGuess = {
+            fromPlayer,
+            toPlayer,
+            guessedNumber,
+            exactMatches
+        };
+        
+        lobby.guesses.push(newGuess);
+        
+        if (isCorrect) {
+            eliminatePlayer(io, lobby, fromPlayer, toPlayer, guessedNumber);
+        }
+        
+        if (lobby.gameStatus === 'active') {
+            advanceToNextTurn(lobby);            
+            emitToLobby(io, lobby.lobbyId, 'turnChange', { username: lobby.currentTurn, targetPlayer: lobby.targetPlayer });
+        }
+        
+        return { guess: newGuess, exactMatches, isCorrect, gameStatus: lobby.gameStatus };
+    } catch (err) {
+        console.error('Error handling guess:', err);
+        return { error: 'Failed to process guess' };
+    }
 }
 
