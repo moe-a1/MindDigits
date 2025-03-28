@@ -5,7 +5,7 @@ const playerSchema = new mongoose.Schema({
   number: { type: String, default: null },
   status: {
     type: String,
-    enum: ['waiting', 'ready', 'playing', 'eliminated'],
+    enum: ['waiting', 'ready', 'playing', 'eliminated', 'spectator'],
     default: 'waiting'
   }
 });
@@ -29,6 +29,16 @@ const lobbySchema = new mongoose.Schema({
     default: 'waiting'
   },
   numberLength: { type: Number, default: 4, min: 3, max: 6 },
+  
+  targetPlayer: { type: String, default: null },
+  targetSequence: { type: [String], default: [] },
+  currentTurn: { type: String, default: null },
+  guessingPlayers: { type: [String], default: [] },
+  guessingOrders: { type: Map, of: [String], default: {} },
+  currentGuessingIndex: { type: Number, default: 0 },
+  currentTargetIndex: { type: Number, default: 0 },
+  currentRound: { type: Number, default: 1 },
+  
   createdAt: { type: Date, default: Date.now, expires: 86400 }
 });
 
