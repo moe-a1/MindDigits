@@ -67,6 +67,12 @@ export function endGame(io, lobby) {
     lobby.gameStatus = 'completed';
     const winner = getWinner(lobby);
 
+    lobby.players.forEach(player => {
+        if (player.status === 'spectator') {
+            player.status = 'waiting';
+        }
+    });
+
     emitToLobby(io, lobby.lobbyId, 'gameOver', { winner, lobby });
     emitSystemMessage(io, lobby.lobbyId, 'gameOver', winner ? `Game over! ${winner} is the winner!` : 'Game over! No players remain.');
 }

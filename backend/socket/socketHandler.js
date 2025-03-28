@@ -126,6 +126,30 @@ export default function setupSocketHandlers(io) {
         handleError(socket, 'Failed to start game', err);
       }
     });
+
+    socket.on('getGameState', async ({ lobbyId }) => {
+      try {
+        const lobby = await findLobby(socket, lobbyId);
+        if (!lobby) return;
+        
+        if (lobby.gameStatus !== 'active') {
+          socket.emit('error', { message: 'Game is not active' });
+          return;
+        }
+        
+        socket.emit('gameState', { 
+          players: lobby.players,
+          currentTurn: lobby.currentTurn,
+          targetPlayer: lobby.targetPlayer,
+          guesses: lobby.guesses
+        });
+        
+        emitToLobby(io, lobbyId, 'turnInfo', { currentTurn: lobby.currentTurn, targetPlayer: lobby.targetPlayer });
+      } catch (err) {
+        handleError(socket, 'Failed to get game state', err);
+      }
+    });
+
     socket.on('makeGuess', async ({ lobbyId, fromPlayer, toPlayer, guessedNumber }) => {
       try {
         const lobby = await findLobby(socket, lobbyId);
