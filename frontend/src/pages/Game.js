@@ -43,7 +43,6 @@ function Game() {
   return (
     <div className="game-container">
       <DrawingCanvas onDrawingModeChange={onDrawingModeChange}>
-        {/* Game header sits above the canvas */}
         <div className="game-header">
           <h1>MIND<span>DIGITS</span></h1>
           
