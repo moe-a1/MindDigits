@@ -1,5 +1,5 @@
 import Lobby from '../models/Lobby.js';
-import { isGameOver, getWinner, advanceToNextTurn, calculateExactMatches } from './gameUtils.js';
+import { isGameOver, getWinner, advanceToNextTurn, calculateExactMatches, initializeTurnSystem } from './gameUtils.js';
 import { emitToLobby, emitSystemMessage } from './socketUtils.js';
 
 export async function findLobby(socket, lobbyId) {
