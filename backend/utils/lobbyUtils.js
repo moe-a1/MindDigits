@@ -17,7 +17,7 @@ export async function findLobby(socket, lobbyId) {
     return lobby;
 }
 
-export async function startGame(io, lobby) {
+export async function startGame(lobby) {
     lobby.gameStatus = 'active';
     lobby.players.forEach(p => { 
         if (p.status === 'ready') {
@@ -27,7 +27,13 @@ export async function startGame(io, lobby) {
 
     lobby.guesses = [];
 
+    const initializeStatus = initializeTurnSystem(lobby);
+    if (!initializeStatus) {
+        return { success: false, error: 'Failed to initialize game turns' };
+    }
+
     await lobby.save();
+    return { success: true };
 }
 export function eliminatePlayer(io, lobby, fromPlayer, toPlayer, guessedNumber) {
     const targetIndex = lobby.players.findIndex(p => p.username === toPlayer);

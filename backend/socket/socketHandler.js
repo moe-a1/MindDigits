@@ -111,14 +111,11 @@ export default function setupSocketHandlers(io) {
         const lobby = await findLobby(socket, lobbyId);
         if (!lobby) return;
         
-        const initializeStatus = initializeTurnSystem(lobby);
-        
-        if (!initializeStatus) {
-          socket.emit('error', { message: 'Failed to initialize game turns' });
+        const startResult = await startGame(lobby);
+        if (!startResult.success) {
+          socket.emit('error', { message: startResult.error || 'Failed to start game' });
           return;
         }
-        
-        await startGame(io, lobby);
         
         emitToLobby(io, lobbyId, 'gameStarted', { players: lobby.players, currentTurn: lobby.currentTurn,targetPlayer: lobby.targetPlayer });
         emitSystemMessage(io, lobbyId, 'gameStarted', `The game has started! ${lobby.targetPlayer}'s number is being targeted. It's ${lobby.currentTurn}'s turn to make a guess.`);
