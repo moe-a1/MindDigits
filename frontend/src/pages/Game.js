@@ -82,17 +82,6 @@ function Game() {
                   {opponent.username === targetPlayer && (
                     <div className="target-indicator">Currently targeted</div>
                   )}
-                  {currentTurn === username && targetPlayer === opponent.username && (
-                    <div className="guess-form">
-                      <form onSubmit={onSubmitGuess}>
-                        <input type="text" pattern="[0-9]*" maxLength={lobbyData.numberLength} placeholder={`Guess ${opponent.username}'s ${lobbyData.numberLength} digit number`}
-                          value={guessInput} onChange={(e) => setGuessInput(e.target.value.replace(/[^0-9]/g, ''))} disabled={isDrawingMode} />
-                        <button type="submit" disabled={isDrawingMode || guessInput.length !== lobbyData.numberLength}>
-                          Guess
-                        </button>
-                      </form>
-                    </div>
-                  )}
                   
                   <div className="guess-history">
                     {guesses
@@ -106,6 +95,18 @@ function Game() {
                           <span className="exact-matches">{guess.exactMatches} correct</span>
                         </div>
                       ))}
+                      
+                    {currentTurn === username && targetPlayer === opponent.username && (
+                      <div className="guess-form">
+                        <form onSubmit={onSubmitGuess}>
+                          <input type="text" pattern="[0-9]*" maxLength={lobbyData.numberLength} placeholder={`Guess ${opponent.username}'s ${lobbyData.numberLength} digit number`}
+                            value={guessInput} onChange={(e) => setGuessInput(e.target.value.replace(/[^0-9]/g, ''))} disabled={isDrawingMode} />
+                          <button type="submit" disabled={isDrawingMode || guessInput.length !== lobbyData.numberLength}>
+                            Guess
+                          </button>
+                        </form>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
