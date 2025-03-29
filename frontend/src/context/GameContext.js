@@ -17,6 +17,7 @@ export function GameProvider({ children }) {
   const [currentTurn, setCurrentTurn] = useState('');
   const [targetPlayer, setTargetPlayer] = useState('');
   const [guesses, setGuesses] = useState([]);
+  const [winner, setWinner] = useState(null);
 
   const createLobby = async (lobbyName, username, numberLength = 4) => {
     setLoading(true);
@@ -81,6 +82,7 @@ export function GameProvider({ children }) {
     setGuesses([]);
     setCurrentTurn('');
     setTargetPlayer('');
+    setWinner(null);
 
     if (socket && lobbyData) {
       socket.emit('leaveLobby', { lobbyId: lobbyData.lobbyId, username });
@@ -123,6 +125,7 @@ export function GameProvider({ children }) {
       setPlayers(data.players || []);
       setCurrentTurn(data.currentTurn || '');
       setTargetPlayer(data.targetPlayer || '');
+      setWinner(null);
     });
     socket.on('turnChange', (data) => {
       setCurrentTurn(data.username || data.currentTurn || '');
@@ -151,6 +154,7 @@ export function GameProvider({ children }) {
     socket.on('gameOver', (data) => {
       setLobbyData(prev => ({ ...prev, gameStatus: 'completed' }));
       setPlayers(data.players || []);
+      setWinner(data.winner);
     });
     socket.on('systemMessage', (message) => setMessages(prev => [...prev, { type: 'system', ...message }]));
     socket.on('chatMessage', (message) => setMessages(prev => [...prev, { type: 'chat', sender: message.sender, content: message.message }]));
@@ -184,6 +188,7 @@ export function GameProvider({ children }) {
     loading, error,
     players, messages,
     currentTurn, targetPlayer, guesses,
+    winner,
     createLobby, joinLobby, getLobby, leaveLobby,
     submitSecretNumber, startGame, makeGuess,
     sendChatMessage, getGameState

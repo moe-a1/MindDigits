@@ -11,7 +11,7 @@ function Game() {
   const [isDrawingMode, setIsDrawingMode] = useState(false);
   const [brushColor, setBrushColor] = useState('#ffffff');
   const [brushSize, setBrushSize] = useState(3);
-  const { lobbyData, username, players, currentTurn, targetPlayer, guesses, leaveLobby, makeGuess, getGameState } = useGame();
+  const { lobbyData, username, players, currentTurn, targetPlayer, guesses, winner, leaveLobby, makeGuess, getGameState } = useGame();
 
   const clearCanvasRef = useRef(null);
   const setBrushColorRef = useRef(null);
@@ -19,9 +19,12 @@ function Game() {
 
   const myPlayer = players.find(p => p.username === username) || {};
   const opponents = players.filter(p => p.username !== username && p.status === 'playing');
+  
+  const isGameOver = lobbyData?.gameStatus === 'completed';
+  const isWinner = winner === username;
 
   useEffect(() => {
-    if (!username || !lobbyData || lobbyData.gameStatus !== 'active') {
+    if (!username || !lobbyData || (lobbyData.gameStatus !== 'active' && lobbyData.gameStatus !== 'completed')) {
       navigate(`/lobby/${lobbyId}`);
       return;
     }
@@ -89,28 +92,30 @@ function Game() {
             )}
           </div>
           
-          <div className="turn-indicator">
-            {currentTurn === username 
-              ? (
-                <div>
-                  <p>It's your turn!</p>
-                  <p>You are guessing <strong>{targetPlayer}</strong>'s number</p>
-                </div>
-              ) 
-              : (
-                <div>
-                  <p>Waiting for <strong>{currentTurn}</strong> to make a guess...</p>
-                  <p><strong>{targetPlayer}</strong>'s number is being targeted</p>
-                </div>
-              )}
-          </div>
+          {!isGameOver && (
+            <div className="turn-indicator">
+              {currentTurn === username 
+                ? (
+                  <div>
+                    <p>It's your turn!</p>
+                    <p>You are guessing <strong>{targetPlayer}</strong>'s number</p>
+                  </div>
+                ) 
+                : (
+                  <div>
+                    <p>Waiting for <strong>{currentTurn}</strong> to make a guess...</p>
+                    <p><strong>{targetPlayer}</strong>'s number is being targeted</p>
+                  </div>
+                )}
+            </div>
+          )}
         </div>
         
         <div className="game-content">
           <div className={`game-board ${isDrawingMode ? 'drawing-mode' : ''}`}>
             <div className="player-section">
               <div className={`player-card my-card ${username === targetPlayer ? 'is-target' : ''}`}>
-                {username === targetPlayer && (
+                {username === targetPlayer && !isGameOver && (
                   <span className="target-indicator">TARGETED</span>
                 )}
                 <h2>{username}</h2>
@@ -121,7 +126,7 @@ function Game() {
             <div className="opponents-section">
               {opponents.map((opponent) => (
                 <div key={opponent.username} className={`opponent-card ${opponent.username === targetPlayer ? 'is-target' : ''}`}>
-                  {opponent.username === targetPlayer && (
+                  {opponent.username === targetPlayer && !isGameOver && (
                     <span className="target-indicator">TARGETED</span>
                   )}
                   <h2>{opponent.username}</h2>
@@ -139,7 +144,7 @@ function Game() {
                         </div>
                       ))}
                       
-                    {currentTurn === username && targetPlayer === opponent.username && (
+                    {currentTurn === username && targetPlayer === opponent.username && !isGameOver && (
                       <div className="guess-form">
                         <form onSubmit={onSubmitGuess}>
                           <input type="text" pattern="[0-9]*" maxLength={lobbyData.numberLength} placeholder={`Guess ${opponent.username}'s ${lobbyData.numberLength} digit number`}
@@ -160,9 +165,34 @@ function Game() {
             Leave Game
           </button>
         </div>
+
+        {isGameOver && winner && (
+          <WinnerModal winner={winner} isYou={isWinner} onLeaveGame={onLeaveLobbyClick}/>
+        )}
       </DrawingCanvas>
     </div>
   );
 }
+
+const WinnerModal = ({ winner, isYou, onLeaveGame }) => {
+  return (
+    <div className="winner-modal-backdrop">
+      <div className="winner-modal">
+        <h2>Game Over!</h2>
+        <div className="winner-username">{winner}</div>
+        <p className="winner-message">
+          {isYou 
+            ? "Congratulations! You've won the game!"
+            : `${winner} has won the game by being the last player standing!`}
+        </p>
+        <div className="winner-buttons">
+          <button className="leave-game-winner-button" onClick={onLeaveGame}>
+            Leave Game
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default Game;
