@@ -18,7 +18,7 @@ function Game() {
   const setBrushSizeRef = useRef(null);
 
   const myPlayer = players.find(p => p.username === username) || {};
-  const opponents = players.filter(p => p.username !== username && p.status === 'playing');
+  const opponentPlayers = players.filter(p => p.username !== username && (p.status === 'playing' || p.status === 'eliminated'));
   
   const isGameOver = lobbyData?.gameStatus === 'completed';
   const isWinner = winner === username;
@@ -121,9 +121,15 @@ function Game() {
         <div className="game-content">
           <div className={`game-board ${isDrawingMode ? 'drawing-mode' : ''}`}>
             <div className="player-section">
-              <div className={`player-card my-card ${username === targetPlayer ? 'is-target' : ''}`}>
+              <div className={`player-card my-card ${username === targetPlayer ? 'is-target' : ''} ${myPlayer.status === 'eliminated' ? 'eliminated' : ''}`}>
                 {username === targetPlayer && !isGameOver && (
                   <span className="target-indicator">TARGETED</span>
+                )}
+                {myPlayer.status === 'eliminated' && (
+                  <div className="eliminated-overlay">
+                    <div className="eliminated-x">X</div>
+                    <div className="eliminated-text">ELIMINATED</div>
+                  </div>
                 )}
                 <h2>{username}</h2>
                 <div className="player-number">{myPlayer.number}</div>
@@ -131,11 +137,22 @@ function Game() {
             </div>
 
             <div className="opponents-section">
-              {opponents.map((opponent) => (
-                <div key={opponent.username} className={`opponent-card ${opponent.username === targetPlayer ? 'is-target' : ''}`}>
-                  {opponent.username === targetPlayer && !isGameOver && (
+              {opponentPlayers.map((opponent) => (
+                <div key={opponent.username} className={`opponent-card ${opponent.username === targetPlayer ? 'is-target' : ''} ${opponent.status === 'eliminated' ? 'eliminated' : ''}`}>
+                  {opponent.username === targetPlayer && !isGameOver && opponent.status !== 'eliminated' && (
                     <span className="target-indicator">TARGETED</span>
                   )}
+                  
+                  {opponent.status === 'eliminated' && (
+                    <div className="eliminated-overlay">
+                      <div className="eliminated-x">X</div>
+                      <div className="eliminated-text">ELIMINATED</div>
+                      <div className="revealed-number">
+                        Secret Number: <span>{opponent.number}</span>
+                      </div>
+                    </div>
+                  )}
+                  
                   <h2>{opponent.username}</h2>
                   
                   <div className="guess-history">
@@ -151,7 +168,7 @@ function Game() {
                         </div>
                       ))}
                       
-                    {currentTurn === username && targetPlayer === opponent.username && !isGameOver && (
+                    {currentTurn === username && targetPlayer === opponent.username && !isGameOver && opponent.status !== 'eliminated' && (
                       <div className="guess-form">
                         <form onSubmit={onSubmitGuess}>
                           <input type="text" pattern="[0-9]*" maxLength={lobbyData.numberLength} placeholder={`Guess ${opponent.username}'s ${lobbyData.numberLength} digit number`}
