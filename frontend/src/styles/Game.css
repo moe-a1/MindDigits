@@ -238,6 +238,7 @@
 .player-card.is-target, .opponent-card.is-target {
   border: 2px solid #4fd1c5;
   box-shadow: 0 0 10px rgba(79, 209, 197, 0.5);
+  position: relative;
 }
 
 .target-indicator {
@@ -248,7 +249,9 @@
   font-size: 0.8rem;
   font-weight: bold;
   text-align: center;
-  margin-top: -10px;
+  position: absolute;
+  top: 20px;
+  left: 20px;
 }
 
 /* Guess form */

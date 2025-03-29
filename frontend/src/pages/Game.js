@@ -67,10 +67,10 @@ function Game() {
           <div className={`game-board ${isDrawingMode ? 'drawing-mode' : ''}`}>
             <div className="player-section">
               <div className={`player-card my-card ${username === targetPlayer ? 'is-target' : ''}`}>
-                <h2>{username}</h2>
                 {username === targetPlayer && (
-                  <div className="target-indicator">Your number is being targeted</div>
+                  <span className="target-indicator">TARGETED</span>
                 )}
+                <h2>{username}</h2>
                 <div className="player-number">{myPlayer.number}</div>
               </div>
             </div>
@@ -78,10 +78,10 @@ function Game() {
             <div className="opponents-section">
               {opponents.map((opponent) => (
                 <div key={opponent.username} className={`opponent-card ${opponent.username === targetPlayer ? 'is-target' : ''}`}>
-                  <h2>{opponent.username}</h2>
                   {opponent.username === targetPlayer && (
-                    <div className="target-indicator">Currently targeted</div>
+                    <span className="target-indicator">TARGETED</span>
                   )}
+                  <h2>{opponent.username}</h2>
                   
                   <div className="guess-history">
                     {guesses
