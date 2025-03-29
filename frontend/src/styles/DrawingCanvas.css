@@ -16,3 +16,14 @@
   cursor: crosshair;
   background-color: transparent;
 }
+
+/* Style for touch devices to prevent scrolling when drawing */
+.drawing-active {
+  touch-action: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}

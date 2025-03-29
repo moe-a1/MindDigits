@@ -58,6 +58,12 @@ function Game() {
     }
   };
 
+  const undoDrawing = () => {
+    if (window.drawingCanvasUtils && window.drawingCanvasUtils.undo) {
+      window.drawingCanvasUtils.undo();
+    }
+  };
+
   const onSubmitGuess = (e) => {
     e.preventDefault();
     if (!guessInput || !targetPlayer || isDrawingMode) return;
@@ -87,6 +93,7 @@ function Game() {
               <>
                 <input type="color" value={brushColor} onChange={updateBrushColor} className="color-picker"/>
                 <input type="range" min="1" max="20" value={brushSize} onChange={updateBrushSize} className="brush-size-slider"/>
+                <button onClick={undoDrawing} className="undo-button" title="Undo (Ctrl+Z)">Undo</button>
                 <button onClick={clearCanvas} className="clear-button">Clear</button>
               </>
             )}

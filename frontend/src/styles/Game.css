@@ -118,7 +118,7 @@
   cursor: pointer;
 }
 
-.clear-button {
+.clear-button, .undo-button {
   background: rgba(255, 255, 255, 0.1);
   color: #e2e8f0;
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -129,8 +129,14 @@
   transition: all 0.3s ease;
 }
 
-.clear-button:hover {
+.clear-button:hover, .undo-button:hover {
   background: rgba(255, 255, 255, 0.2);
+}
+
+.undo-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .turn-indicator {
