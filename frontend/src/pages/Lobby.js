@@ -9,9 +9,14 @@ function Lobby() {
   const navigate = useNavigate();
   const messagesEndRef = useRef(null);
   const { socket, connected } = useSocket();
-  const { lobbyData, username, players, messages, sendChatMessage, leaveLobby } = useGame();
+  const { lobbyData, username, players, messages, sendChatMessage, leaveLobby, submitSecretNumber, startGame } = useGame();
+  
   const [copySuccess, setCopySuccess] = useState('');
   const [chatMessage, setChatMessage] = useState('');
+  const [secretNumber, setSecretNumber] = useState('');
+  
+  const currentPlayer = players.find(p => p.username === username);
+  const allPlayersReady = players.length >= 2 && players.every(p => p.status === 'ready');
 
   useEffect(() => {
     if (!username) {
@@ -27,6 +32,12 @@ function Lobby() {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  useEffect(() => {
+    if (lobbyData && lobbyData.gameStatus === 'active') {
+      navigate(`/game/${lobbyId}`);
+    }
+  }, [lobbyData, lobbyId, navigate]);
 
   const copyLobbyIdToClipboard = () => {
     navigator.clipboard.writeText(lobbyId)
@@ -51,6 +62,15 @@ function Lobby() {
   const onLeaveLobbyClick = () => {
     leaveLobby();
     navigate('/');
+  };
+
+  const onSubmitNumber = (e) => {
+    e.preventDefault();
+    submitSecretNumber(secretNumber);
+  };
+
+  const onStartGame = () => {
+    startGame();
   };
 
   if (!connected || !lobbyData) {
@@ -103,19 +123,41 @@ function Lobby() {
         <div className="game-area">
           <div className="game-status">
             <h2>Game Status: {lobbyData.gameStatus || 'waiting'}</h2>
-            <p>
-              {(lobbyData.gameStatus === 'waiting' || !lobbyData.gameStatus)
-                ? 'Waiting for players to join and get ready...' 
-                : lobbyData.gameStatus === 'active'
-                    ? 'Game is in progress!' : 'Game has ended!'
-              }
-            </p>
+            
+            {currentPlayer.status === 'waiting' ? (
+              <div className="number-input-container">
+                <p>Enter your secret {lobbyData.numberLength}-digit number:</p>
+                <form onSubmit={onSubmitNumber}>
+                  <div className="number-input-field">
+                    <input type="text" pattern="[0-9]*" inputMode="numeric" maxLength={lobbyData.numberLength}
+                      placeholder={`Enter ${lobbyData.numberLength} digits`} value={secretNumber}
+                      onChange={(e) => setSecretNumber(e.target.value.replace(/[^0-9]/g, ''))} required />
+                    <button type="submit" disabled={secretNumber.length !== lobbyData.numberLength}>
+                      Submit & Get Ready
+                    </button>
+                  </div>
+                  <p className="input-help">This will be the number other players try to guess.</p>
+                </form>
+              </div>
+            ) : (
+              <div className="player-status-message">
+                <p>You are ready with your secret number! Waiting for other players...</p>
+                {currentPlayer && currentPlayer.number && (
+                  <div className="secret-number-display">
+                    <span>Your secret number:</span>
+                    <span className="secret-number">{currentPlayer.number}</span>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           <div className="action-buttons">
-            <button className="main-action-button">
-              {(lobbyData.gameStatus === 'waiting' || !lobbyData.gameStatus) ? 'Get Ready' : 'Start New Game'}
-            </button>
+            {allPlayersReady && (
+              <button className="main-action-button" onClick={onStartGame}>
+                Start Game
+              </button>
+            )}
           </div>
         </div>
 
