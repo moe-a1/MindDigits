@@ -117,7 +117,7 @@ export default function setupSocketHandlers(io) {
           return;
         }
         
-        emitToLobby(io, lobbyId, 'gameStarted', { players: lobby.players, currentTurn: lobby.currentTurn,targetPlayer: lobby.targetPlayer });
+        emitToLobby(io, lobbyId, 'gameStarted', { players: lobby.players, currentTurn: lobby.currentTurn, targetPlayer: lobby.targetPlayer });
         emitSystemMessage(io, lobbyId, 'gameStarted', `The game has started! ${lobby.targetPlayer}'s number is being targeted. It's ${lobby.currentTurn}'s turn to make a guess.`);
       } catch (err) {
         handleError(socket, 'Failed to start game', err);
