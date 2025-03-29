@@ -70,6 +70,12 @@ function setupGuessingOrder(lobby, activePlayers) {
 export function advanceToNextTurn(lobby) {
     const activePlayers = getActivePlayers(lobby);
     
+    lobby.guessingPlayers = lobby.guessingPlayers.filter(username => activePlayers.some(p => p.username === username));
+    if (lobby.guessingPlayers.length === 0) {
+        advanceToNextTarget(lobby, activePlayers);
+        return;
+    }
+    
     lobby.currentGuessingIndex = (lobby.currentGuessingIndex + 1) % lobby.guessingPlayers.length;
     
     if (lobby.currentGuessingIndex === 0) {
@@ -78,7 +84,7 @@ export function advanceToNextTurn(lobby) {
         lobby.currentTurn = lobby.guessingPlayers[lobby.currentGuessingIndex];
     }
 }
-function advanceToNextTarget(lobby, activePlayers) {
+export function advanceToNextTarget(lobby, activePlayers) {
     lobby.currentTargetIndex = (lobby.currentTargetIndex + 1) % lobby.targetSequence.length;
     
     if (lobby.currentTargetIndex === 0) {

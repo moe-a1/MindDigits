@@ -1,5 +1,5 @@
 import Lobby from '../models/Lobby.js';
-import { isGameOver, getWinner, advanceToNextTurn, calculateExactMatches, initializeTurnSystem } from './gameUtils.js';
+import { isGameOver, getWinner, advanceToNextTurn, calculateExactMatches, initializeTurnSystem, getActivePlayers, advanceToNextTarget } from './gameUtils.js';
 import { emitToLobby, emitSystemMessage } from './socketUtils.js';
 
 export async function findLobby(socket, lobbyId) {
@@ -40,6 +40,15 @@ export function eliminatePlayer(io, lobby, fromPlayer, toPlayer, guessedNumber) 
     if (targetIndex === -1) return false;
 
     lobby.players[targetIndex].status = 'eliminated';
+
+    if (lobby.currentTurn === toPlayer) {
+        advanceToNextTurn(lobby);
+    }
+
+    if (lobby.targetPlayer === toPlayer) {
+        const activePlayers = getActivePlayers(lobby);
+        advanceToNextTarget(lobby, activePlayers);
+    }
 
     emitToLobby(io, lobby.lobbyId, 'playerEliminated', { username: toPlayer, eliminatedBy: fromPlayer, players: lobby.players });
     emitSystemMessage(io, lobby.lobbyId, 'playerEliminated', `${fromPlayer} correctly guessed ${toPlayer}'s number (${guessedNumber})! ${toPlayer} has been eliminated.`);
