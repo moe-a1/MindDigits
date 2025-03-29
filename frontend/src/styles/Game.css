@@ -1,0 +1,383 @@
+/* Game container and canvas setup */
+.game-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, #121212 0%, #2d3748 100%);
+  color: #e2e8f0;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Canvas styles */
+.drawing-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+  pointer-events: none;
+  touch-action: none;
+}
+
+.drawing-canvas.drawing-active {
+  z-index: 35;
+  pointer-events: auto;
+  cursor: crosshair;
+  background-color: transparent;
+}
+
+/* Header styles */
+.game-header {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  pointer-events: auto;
+  z-index: 40;
+}
+
+.game-header h1 {
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(79, 209, 197, 0.5);
+  margin: 0;
+}
+
+.game-header h1 span {
+  color: #4fd1c5;
+}
+
+/* Drawing tools */
+.drawing-tools {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Ensure all buttons and inputs in the header are always clickable */
+.game-header button, 
+.game-header input,
+.drawing-tools * {
+  pointer-events: auto;
+  z-index: 51;
+}
+
+.drawing-toggle {
+  background: #4fd1c5;
+  color: #1a202c;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.drawing-toggle.active {
+  background: #38b2ac;
+  box-shadow: 0 0 0 2px rgba(79, 209, 197, 0.5);
+}
+
+.drawing-tools input[type="color"] {
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: none;
+  cursor: pointer;
+  padding: 0;
+  overflow: hidden;
+}
+
+.drawing-tools input[type="range"] {
+  width: 100px;
+  height: 5px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+  appearance: none;
+}
+
+.drawing-tools input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  background: #4fd1c5;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.clear-button {
+  background: rgba(255, 255, 255, 0.1);
+  color: #e2e8f0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  padding: 5px 10px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.clear-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.turn-indicator {
+  padding: 5px 15px;
+  background: rgba(79, 209, 197, 0.2);
+  border-radius: 20px;
+  font-size: 0.9rem;
+  color: #4fd1c5;
+  border: 1px solid #4fd1c5;
+}
+
+/* Content area */
+.game-content {
+  position: absolute;
+  top: 100px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  pointer-events: auto;
+  z-index: 10;
+}
+
+.game-board {
+  flex: 1;
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.game-board.drawing-mode input,
+.game-board.drawing-mode button {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
+/* Player sections */
+.player-section {
+  width: 30%;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.opponents-section {
+  width: 70%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  overflow-y: auto;
+}
+
+/* Player cards */
+.player-card, .opponent-card {
+  width: 100%;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  height: 100%;
+  transition: all 0.3s ease;
+}
+
+.opponent-card {
+  flex: 1;
+  min-width: calc(50% - 20px);
+  max-width: calc(50% - 20px);
+}
+
+.my-card {
+  text-align: center;
+}
+
+.player-card h2, .opponent-card h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #4fd1c5;
+  text-align: center;
+}
+
+.player-number {
+  font-size: 2.5rem;
+  font-weight: bold;
+  letter-spacing: 5px;
+  padding: 15px;
+  background: rgba(79, 209, 197, 0.1);
+  border-radius: 8px;
+  color: #ffffff;
+  text-align: center;
+}
+
+/* Target styles */
+.player-card.is-target, .opponent-card.is-target {
+  border: 2px solid #4fd1c5;
+  box-shadow: 0 0 10px rgba(79, 209, 197, 0.5);
+}
+
+.target-indicator {
+  background: rgba(79, 209, 197, 0.2);
+  color: #4fd1c5;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-align: center;
+  margin-top: -10px;
+}
+
+/* Guess form */
+.guess-form {
+  margin-top: 10px;
+}
+
+.guess-form form {
+  display: flex;
+  gap: 10px;
+}
+
+.guess-form input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  font-size: 1rem;
+}
+
+.guess-form input:focus {
+  outline: none;
+  border-color: #4fd1c5;
+}
+
+.guess-form button {
+  padding: 10px 15px;
+  background: #4fd1c5;
+  color: #1a202c;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.guess-form button:hover:not(:disabled) {
+  background: #38b2ac;
+  transform: translateY(-2px);
+}
+
+.guess-form button:disabled {
+  background: rgba(79, 209, 197, 0.3);
+  cursor: not-allowed;
+}
+
+/* Guess history */
+.guess-history {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.guess-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.guess-item:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.guessed-number {
+  font-family: monospace;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.exact-matches {
+  color: #4fd1c5;
+  font-size: 0.9rem;
+  font-weight: 500;
+  background: rgba(79, 209, 197, 0.1);
+  padding: 3px 8px;
+  border-radius: 10px;
+}
+
+.guess-from {
+  font-size: 0.9rem;
+  color: #a0aec0;
+  margin-right: 8px;
+}
+
+/* Leave game button */
+.leave-game-button {
+  align-self: center;
+  background: #fc8181;
+  color: #1a202c;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 15;
+}
+
+.leave-game-button:hover:not(:disabled) {
+  background: #e53e3e;
+}
+
+.leave-game-button:disabled {
+  background: rgba(252, 129, 129, 0.5);
+  cursor: not-allowed;
+}
+
+/* Responsive styles */
+@media (max-width: 992px) {
+  .game-board {
+    flex-direction: column;
+  }
+  
+  .player-section, .opponents-section {
+    width: 100%;
+  }
+  
+  .opponent-card {
+    min-width: 100%;
+    max-width: 100%;
+  }
+}
