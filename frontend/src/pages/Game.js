@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useGame } from '../context/GameContext';
 import DrawingCanvas from '../components/DrawingCanvas';
@@ -9,7 +9,13 @@ function Game() {
   const navigate = useNavigate();  
   const [guessInput, setGuessInput] = useState('');
   const [isDrawingMode, setIsDrawingMode] = useState(false);
+  const [brushColor, setBrushColor] = useState('#ffffff');
+  const [brushSize, setBrushSize] = useState(3);
   const { lobbyData, username, players, currentTurn, targetPlayer, guesses, leaveLobby, makeGuess, getGameState } = useGame();
+
+  const clearCanvasRef = useRef(null);
+  const setBrushColorRef = useRef(null);
+  const setBrushSizeRef = useRef(null);
 
   const myPlayer = players.find(p => p.username === username) || {};
   const opponents = players.filter(p => p.username !== username && p.status === 'playing');
@@ -23,8 +29,30 @@ function Game() {
     getGameState();
   }, [username, lobbyData, navigate, lobbyId, getGameState]);
   
-  const onDrawingModeChange = (drawingMode) => {
-    setIsDrawingMode(drawingMode);
+  const toggleDrawingMode = () => {
+    setIsDrawingMode(!isDrawingMode);
+  };
+
+  const clearCanvas = () => {
+    if (clearCanvasRef.current) {
+      clearCanvasRef.current();
+    }
+  };
+
+  const updateBrushColor = (e) => {
+    const newColor = e.target.value;
+    setBrushColor(newColor);
+    if (setBrushColorRef.current) {
+      setBrushColorRef.current(newColor);
+    }
+  };
+
+  const updateBrushSize = (e) => {
+    const newSize = Number(e.target.value);
+    setBrushSize(newSize);
+    if (setBrushSizeRef.current) {
+      setBrushSizeRef.current(newSize);
+    }
   };
 
   const onSubmitGuess = (e) => {
@@ -42,9 +70,24 @@ function Game() {
 
   return (
     <div className="game-container">
-      <DrawingCanvas onDrawingModeChange={onDrawingModeChange}>
+      <DrawingCanvas isDrawingMode={isDrawingMode}
+        externalClearCanvas={clearCanvasRef} externalSetBrushColor={setBrushColorRef} externalSetBrushSize={setBrushSizeRef}>
         <div className="game-header">
           <h1>MIND<span>DIGITS</span></h1>
+          
+          <div className="drawing-tools">
+            <button className={`drawing-toggle ${isDrawingMode ? 'active' : ''}`} onClick={toggleDrawingMode}>
+              {isDrawingMode ? 'Exit Drawing' : 'Draw'}
+            </button>
+            
+            {isDrawingMode && (
+              <>
+                <input type="color" value={brushColor} onChange={updateBrushColor} className="color-picker"/>
+                <input type="range" min="1" max="20" value={brushSize} onChange={updateBrushSize} className="brush-size-slider"/>
+                <button onClick={clearCanvas} className="clear-button">Clear</button>
+              </>
+            )}
+          </div>
           
           <div className="turn-indicator">
             {currentTurn === username 

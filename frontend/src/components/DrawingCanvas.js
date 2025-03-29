@@ -1,20 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import '../styles/DrawingCanvas.css';
 
-const DrawingCanvas = ({ children, onDrawingModeChange }) => {
+const DrawingCanvas = ({ children, isDrawingMode, externalClearCanvas, externalSetBrushColor, externalSetBrushSize }) => {
   const [isDrawing, setIsDrawing] = useState(false);
-  const [isDrawingMode, setIsDrawingMode] = useState(false);
   const [brushColor, setBrushColor] = useState('#ffffff');
   const [brushSize, setBrushSize] = useState(3);
   
   const canvasRef = useRef(null);
   const contextRef = useRef(null);
-  
-  useEffect(() => {
-    if (onDrawingModeChange) {
-      onDrawingModeChange(isDrawingMode);
-    }
-  }, [isDrawingMode, onDrawingModeChange]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -82,54 +75,42 @@ const DrawingCanvas = ({ children, onDrawingModeChange }) => {
     contextRef.current.stroke();
   };
 
-  const toggleDrawingMode = () => {
-    setIsDrawingMode(!isDrawingMode);
-    if (isDrawing) {
-      setIsDrawing(false);
-      contextRef.current?.closePath();
-    }
-  };
-
   const clearCanvas = () => {
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
     context.clearRect(0, 0, canvas.width, canvas.height);
   };
 
-  const updateBrushColor = (e) => {
-    const newColor = e.target.value;
+  const updateBrushColor = (newColor) => {
     setBrushColor(newColor);
     if (contextRef.current) {
       contextRef.current.strokeStyle = newColor;
     }
   };
-  const updateBrushSize = (e) => {
-    const newSize = Number(e.target.value);
+  
+  const updateBrushSize = (newSize) => {
     setBrushSize(newSize);
     if (contextRef.current) {
       contextRef.current.lineWidth = newSize;
     }
   };
 
+  useEffect(() => {
+    if (externalClearCanvas) {
+      externalClearCanvas.current = clearCanvas;
+    }
+    if (externalSetBrushColor) {
+      externalSetBrushColor.current = updateBrushColor;
+    }
+    if (externalSetBrushSize) {
+      externalSetBrushSize.current = updateBrushSize;
+    }
+  }, [externalClearCanvas, externalSetBrushColor, externalSetBrushSize]);
+
   return (
     <>
       <canvas ref={canvasRef} onMouseDown={onStartDrawing} onMouseUp={onEndDrawing} onMouseMove={handleDraw} 
         onMouseLeave={onEndDrawing} className={`drawing-canvas ${isDrawingMode ? 'drawing-active' : ''}`}/>
-      
-      <div id="drawing-controls-container">
-        <div className="drawing-controls">
-          <button className={`drawing-toggle ${isDrawingMode ? 'active' : ''}`} onClick={toggleDrawingMode}>
-            {isDrawingMode ? 'Exit Drawing' : 'Draw'}
-          </button>
-          {isDrawingMode && (
-            <>
-              <input type="color" value={brushColor} onChange={updateBrushColor} className="color-picker"/>
-              <input type="range" min="1" max="20" value={brushSize} onChange={updateBrushSize} className="brush-size-slider"/>
-              <button onClick={clearCanvas} className="clear-button">Clear</button>
-            </>
-          )}
-        </div>
-      </div>
       
       {children}
     </>
