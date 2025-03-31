@@ -403,6 +403,7 @@
   background: rgba(255, 255, 255, 0.08);
   border-radius: 4px;
   transition: background-color 0.2s ease;
+  position: relative;
 }
 
 .guess-item:hover {
@@ -414,6 +415,10 @@
   font-size: 1.5rem;
   font-weight: 600;
   letter-spacing: 5px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #ffffff;
 }
 
 .exact-matches {
@@ -423,12 +428,13 @@
   background: rgba(79, 209, 197, 0.1);
   padding: 3px 8px;
   border-radius: 10px;
+  margin-left: auto;
 }
 
 .guess-from {
   font-size: 0.9rem;
   color: #a0aec0;
-  margin-right: 8px;
+  margin-right: auto;
 }
 
 /* Leave game button */

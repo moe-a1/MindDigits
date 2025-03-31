@@ -160,10 +160,8 @@ function Game() {
                       .filter(guess => guess.toPlayer === opponent.username)
                       .map((guess, index) => (
                         <div key={index} className="guess-item">
-                          <div>
-                            <span className="guess-from">{guess.fromPlayer}:</span>
-                            <span className="guessed-number">{guess.guessedNumber}</span>
-                          </div>
+                          <span className="guess-from">{guess.fromPlayer}</span>
+                          <span className="guessed-number">{guess.guessedNumber}</span>
                           <span className="exact-matches">{guess.exactMatches} correct</span>
                         </div>
                       ))}
