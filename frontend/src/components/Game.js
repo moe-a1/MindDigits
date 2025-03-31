@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useGame } from '../context/GameContext';
-import DrawingCanvas from '../components/DrawingCanvas';
+import DrawingCanvas from './DrawingCanvas';
 import '../styles/Game.css';
 
 function Game() {
