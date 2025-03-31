@@ -69,8 +69,20 @@ export async function disconnectPlayer(io, userData) {
         return;
     }
 
-    if (lobby.gameStatus === 'active' && isGameOver(lobby)) {
-        endGame(io, lobby);
+    if (lobby.gameStatus === 'active') {
+        const activePlayers = getActivePlayers(lobby);
+        
+        if (isGameOver(lobby)) {
+            endGame(io, lobby);
+        }
+        else if (lobby.currentTurn === userData.username) {
+            advanceToNextTurn(lobby);
+            emitToLobby(io, userData.lobbyId, 'turnChange', { username: lobby.currentTurn, targetPlayer: lobby.targetPlayer });
+        } 
+        else if (lobby.targetPlayer === userData.username) {
+            advanceToNextTarget(lobby, activePlayers);
+            emitToLobby(io, userData.lobbyId, 'turnChange', { username: lobby.currentTurn, targetPlayer: lobby.targetPlayer });
+        }
     }
 
     await lobby.save();
