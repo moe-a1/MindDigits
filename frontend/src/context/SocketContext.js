@@ -13,12 +13,10 @@ export function SocketProvider({ children }) {
     const socketInstance = io('http://localhost:5000');
 
     socketInstance.on('connect', () => {
-      console.log('Connected to server');
       setConnected(true);
     });
 
     socketInstance.on('disconnect', () => {
-      console.log('Disconnected from server');
       setConnected(false);
     });
 

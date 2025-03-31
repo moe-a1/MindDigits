@@ -7,7 +7,6 @@ export default function setupSocketHandlers(io) {
   const activeConnections = {};
 
   io.on('connection', (socket) => {
-    console.log('New client connected:', socket.id);
     activeConnections[socket.id] = { connected: true };
 
     socket.on('createLobby', async ({ name, createdBy, numberLength = 4 }) => {
@@ -216,7 +215,6 @@ export default function setupSocketHandlers(io) {
       }
       
       delete activeConnections[socket.id];
-      console.log('Client disconnected:', socket.id);
     });
   });
 }
