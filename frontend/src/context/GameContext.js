@@ -121,7 +121,7 @@ export function GameProvider({ children }) {
     socket.on('playerLeft', (data) => setPlayers(data.players || []));
     socket.on('playerReady', (data) => setPlayers(data.players || []));
     socket.on('gameStarted', (data) => {
-      setLobbyData(prev => ({ ...prev, gameStatus: 'active' }));
+      setLobbyData(prev => ({ ...prev, gameStatus: data.gameStatus }));
       setPlayers(data.players || []);
       setCurrentTurn(data.currentTurn || '');
       setTargetPlayer(data.targetPlayer || '');
@@ -152,8 +152,8 @@ export function GameProvider({ children }) {
       }
     });
     socket.on('gameOver', (data) => {
-      setLobbyData(prev => ({ ...prev, gameStatus: 'completed' }));
-      setPlayers(data.players || []);
+      setLobbyData(data.lobby);
+      setPlayers(data.lobby.players || []);
       setWinner(data.winner);
     });
     socket.on('systemMessage', (message) => setMessages(prev => [...prev, { type: 'system', ...message }]));
