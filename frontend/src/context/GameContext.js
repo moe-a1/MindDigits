@@ -50,7 +50,7 @@ export function GameProvider({ children }) {
       setPlayers(data.players || []);
       return data;
     } catch (err) {
-      setError(err.message || 'Failed to join lobby');
+      setError(err || 'Failed to join lobby');
       throw err;
     } finally {
       setLoading(false);

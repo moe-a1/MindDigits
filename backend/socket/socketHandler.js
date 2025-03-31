@@ -40,6 +40,12 @@ export default function setupSocketHandlers(io) {
       try {
         const lobby = await findLobby(socket, lobbyId);
         if (!lobby) return;
+
+        const existingPlayer = lobby.players.find(p => p.username === username);
+        if (existingPlayer) {
+          handleError(socket, `Username "${username}" is already taken in this lobby.`);
+          return;
+        }
         
         activeConnections[socket.id] = { ...activeConnections[socket.id], lobbyId, username };
 
