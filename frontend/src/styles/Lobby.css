@@ -132,6 +132,46 @@
   padding-bottom: 10px;
 }
 
+/* Players header with count */
+.players-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.players-header h2 {
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.player-count {
+  font-size: 0.9rem;
+  font-weight: bold;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 5px 10px;
+  border-radius: 20px;
+  color: #4fd1c5;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.player-count.full {
+  background: rgba(252, 129, 129, 0.1);
+  color: #fc8181;
+}
+
+.lobby-full-tag {
+  background: #fc8181;
+  color: #1a202c;
+  font-size: 0.7rem;
+  padding: 2px 5px;
+  border-radius: 4px;
+  font-weight: 700;
+}
+
 .players-list ul {
   list-style-type: none;
   padding: 0;

@@ -15,8 +15,11 @@ function Lobby() {
   const [chatMessage, setChatMessage] = useState('');
   const [secretNumber, setSecretNumber] = useState('');
   
+  const MAX_PLAYERS = 5;
+  const activePlayers = players.filter(p => p.status !== 'spectator');
   const currentPlayer = players.find(p => p.username === username);
   const allPlayersReady = players.length >= 2 && players.every(p => p.status === 'ready');
+  const isLobbyFull = activePlayers.length >= MAX_PLAYERS;
 
   useEffect(() => {
     if (!username) {
@@ -106,7 +109,13 @@ function Lobby() {
 
       <div className="lobby-content">
         <div className="players-list">
-          <h2>Players ({players.length})</h2>
+          <div className="players-header">
+            <h2>Players</h2>
+            <div className={`player-count ${isLobbyFull ? 'full' : ''}`}>
+              {activePlayers.length} / {MAX_PLAYERS}
+              {isLobbyFull && <span className="lobby-full-tag">FULL</span>}
+            </div>
+          </div>
           <ul>
             {players.map((player, index) => (
               <li key={index} className={`player-item ${player.status || 'waiting'}`}>

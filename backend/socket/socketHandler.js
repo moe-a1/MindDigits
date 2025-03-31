@@ -47,6 +47,12 @@ export default function setupSocketHandlers(io) {
           return;
         }
         
+        const activePlayers = lobby.players.filter(p => p.status !== 'spectator');
+        if (lobby.gameStatus !== 'active' && activePlayers.length >= 5) {
+          handleError(socket, 'This lobby has reached the maximum of 5 players');
+          return;
+        }
+        
         activeConnections[socket.id] = { ...activeConnections[socket.id], lobbyId, username };
 
         socket.join(`lobby:${lobbyId}`);
