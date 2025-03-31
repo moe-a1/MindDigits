@@ -103,6 +103,20 @@
   transition: all 0.3s ease;
 }
 
+.form-group select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='white' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px top 50%;
+  cursor: pointer;
+}
+
+.form-group select option {
+  background-color: #2d3748;
+  color: #ffffff;
+}
+
+
 .form-group input:focus, .form-group select:focus {
   outline: none;
   border-color: #4fd1c5;
