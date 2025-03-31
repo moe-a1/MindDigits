@@ -167,6 +167,8 @@
   display: flex;
   gap: 20px;
   margin-bottom: 20px;
+  max-height: calc(100vh - 180px);
+  overflow: hidden;
 }
 
 .game-board.drawing-mode input,
@@ -177,8 +179,8 @@
 
 /* Player sections */
 .player-section {
-  width: 30%;
-  padding: 20px;
+  width: 20%;
+  padding: 15px;
   background: rgba(0, 0, 0, 0.2);
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -189,33 +191,51 @@
 }
 
 .opponents-section {
-  width: 70%;
+  width: 80%;
   display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  overflow-y: auto;
+  flex-wrap: nowrap;
+  gap: 10px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  align-items: stretch;
 }
 
 /* Player cards */
 .player-card, .opponent-card {
-  width: 100%;
-  padding: 20px;
+  padding: 15px;
   background: rgba(0, 0, 0, 0.1);
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  height: 100%;
+  gap: 10px;
   transition: all 0.3s ease;
   position: relative;
+  height: auto;
+}
+
+.player-card {
+  width: 100%;
 }
 
 .opponent-card {
   flex: 1;
-  min-width: calc(50% - 20px);
-  max-width: calc(50% - 20px);
+  min-width: 0;
+  width: 0;
+}
+
+/* Adjust opponent card sizes based on number of opponents */
+.opponents-section:has(.opponent-card:nth-child(2):last-child) .opponent-card {
+  min-width: calc(50% - 5px);
+}
+
+.opponents-section:has(.opponent-card:nth-child(3):last-child) .opponent-card {
+  min-width: calc(33.333% - 7px);
+}
+
+.opponents-section:has(.opponent-card:nth-child(4):last-child) .opponent-card {
+  min-width: calc(25% - 8px);
 }
 
 .my-card {
@@ -224,16 +244,19 @@
 
 .player-card h2, .opponent-card h2 {
   margin: 0;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   color: #4fd1c5;
   text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .player-number {
-  font-size: 2.5rem;
+  font-size: 2rem;
   font-weight: bold;
-  letter-spacing: 5px;
-  padding: 15px;
+  letter-spacing: 3px;
+  padding: 10px;
   background: rgba(79, 209, 197, 0.1);
   border-radius: 8px;
   color: #ffffff;
@@ -369,6 +392,7 @@
   gap: 8px;
   flex-grow: 1;
   overflow-y: auto;
+  min-height: 100px;
 }
 
 .guess-item {
@@ -526,9 +550,24 @@
   .player-section, .opponents-section {
     width: 100%;
   }
+    
+  .opponents-section {
+    flex-wrap: wrap;
+    overflow-y: auto;
+  }
   
   .opponent-card {
-    min-width: 100%;
+    min-width: calc(50% - 10px) !important;
+    max-width: calc(50% - 10px);
+    flex: 0 0 calc(50% - 10px);
+  }
+}
+
+/* Additional responsive adjustments for mobile */
+@media (max-width: 576px) {
+  .opponent-card {
+    min-width: 100% !important;
     max-width: 100%;
+    flex: 0 0 100%;
   }
 }
