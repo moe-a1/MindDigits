@@ -10,7 +10,7 @@ export function SocketProvider({ children }) {
   const [connected, setConnected] = useState(false);
 
   useEffect(() => {
-    const socketInstance = io('http://localhost:5000');
+    const socketInstance = io(process.env.REACT_APP_BACKEND_URL);
 
     socketInstance.on('connect', () => {
       setConnected(true);

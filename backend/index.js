@@ -10,7 +10,7 @@ const app = express();
 const server = http.createServer(app);
 
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+  origin: process.env.CORS_ORIGIN,
   methods: ['GET', 'POST', 'PUT', 'DELETE']
 }));
 app.use(express.json());
@@ -21,7 +21,7 @@ mongoose.connect(process.env.MONGODB_URI, { dbName: 'MindDigits' })
 
 const io = new Server(server, {
   cors: {
-    origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+    origin: process.env.CORS_ORIGIN,
   }
 });
 
