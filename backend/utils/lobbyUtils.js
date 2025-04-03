@@ -136,42 +136,31 @@ export async function handlePlayerGuess(io, lobby, fromPlayer, toPlayer, guessed
 }
 
 export async function resetLobbyAfterGame(io, lobby, username, socket) {
-    const playerIndex = lobby.players.findIndex(p => p.username === username);
+    if (lobby.gameStatus === 'completed') {
+        lobby.players.forEach(player => {
+            player.status = 'waiting';
+            player.number = null;
+        });
+        
+        lobby.gameStatus = 'waiting';
+        lobby.targetPlayer = null;
+        lobby.targetSequence = [];
+        lobby.currentTurn = null;
+        lobby.guessingPlayers = [];
+        lobby.guessingOrders = {};
+        lobby.currentGuessingIndex = 0;
+        lobby.currentTargetIndex = 0;
+        lobby.currentRound = 1;
+        lobby.guesses = [];
 
-    if (playerIndex !== -1) {
-        lobby.players[playerIndex].status = 'waiting';
-        lobby.players[playerIndex].number = null;
-
-        if (lobby.gameStatus === 'completed') {
-            lobby.players.forEach(player => {
-                if (player.status === 'eliminated' || player.status === 'playing') {
-                    player.status = 'waiting';
-                    player.number = null;
-                }
-            });
-            
-            lobby.gameStatus = 'waiting';
-            lobby.targetPlayer = null;
-            lobby.targetSequence = [];
-            lobby.currentTurn = null;
-            lobby.guessingPlayers = [];
-            lobby.guessingOrders = {};
-            lobby.currentGuessingIndex = 0;
-            lobby.currentTargetIndex = 0;
-            lobby.currentRound = 1;
-            lobby.guesses = [];
-            
-            //emitSystemMessage(io, lobby.lobbyId, 'gameReset', 'The game has been reset. Submit your numbers to play again!');
-        }
-
-        await lobby.save();
-
-        const updatedLobby = await findLobby(socket, lobby.lobbyId);
-        emitToLobby(io, lobby.lobbyId, 'lobbyUpdated', updatedLobby.toObject());
-
-        return updatedLobby;
+        //emitSystemMessage(io, lobby.lobbyId, 'gameReset', 'The game has been reset. Submit your numbers to play again!');
     }
 
-    return lobby;
+    await lobby.save();
+
+    const updatedLobby = await findLobby(socket, lobby.lobbyId);
+    emitToLobby(io, lobby.lobbyId, 'lobbyUpdated', updatedLobby.toObject());
+
+    return updatedLobby;
 }
 
