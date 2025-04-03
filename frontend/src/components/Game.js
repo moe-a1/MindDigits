@@ -209,12 +209,15 @@ function Game() {
 }
 
 const WinnerModal = ({ winner, isYou, onLeaveGame, onReturnToLobby, lobbyId }) => {
-  const { returnToLobby } = useGame();
+  const { returnToLobby, players } = useGame();
 
   const handleReturnToLobby = () => {
     returnToLobby(lobbyId);
     onReturnToLobby();
   };
+
+  const winnerPlayer = players.find(player => player.username === winner);
+  const winnerNumber = winnerPlayer ? winnerPlayer.number : null;
 
   return (
     <div className="winner-modal-backdrop">
@@ -226,6 +229,12 @@ const WinnerModal = ({ winner, isYou, onLeaveGame, onReturnToLobby, lobbyId }) =
             ? "Congratulations! You've won the game!"
             : `${winner} has won the game by being the last player standing!`}
         </p>
+        {winnerNumber && (
+          <div className="winner-number">
+            <span className="winner-number-label">Winning Number:</span>
+            <span className="winner-number-value">{winnerNumber}</span>
+          </div>
+        )}
         <div className="winner-buttons">
           <button className="return-to-lobby-button" onClick={handleReturnToLobby}>
             Return to Lobby

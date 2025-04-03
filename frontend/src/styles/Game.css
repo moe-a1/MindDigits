@@ -538,6 +538,32 @@
   color: #e2e8f0;
 }
 
+.winner-number {
+  background: rgba(79, 209, 197, 0.1);
+  padding: 12px;
+  border-radius: 8px;
+  margin: 0 auto 25px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(79, 209, 197, 0.3);
+}
+
+.winner-number-label {
+  font-size: 0.9rem;
+  color: #a0aec0;
+}
+
+.winner-number-value {
+  font-family: monospace;
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: 5px;
+  color: #4fd1c5;
+  text-shadow: 0 0 5px rgba(79, 209, 197, 0.5);
+}
+
 .winner-buttons {
   display: flex;
   justify-content: center;
