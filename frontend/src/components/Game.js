@@ -133,6 +133,18 @@ function Game() {
                 )}
                 <h2>{username}</h2>
                 <div className="player-number">{myPlayer.number}</div>
+                
+                <div className="guess-history">
+                  {guesses
+                    .filter(guess => guess.toPlayer === username)
+                    .map((guess, index) => (
+                      <div key={index} className="guess-item">
+                        <span className="guess-from">{guess.fromPlayer}</span>
+                        <span className="guessed-number">{guess.guessedNumber}</span>
+                        <span className="exact-matches">{guess.exactMatches} correct</span>
+                      </div>
+                    ))}
+                </div>
               </div>
             </div>
 
