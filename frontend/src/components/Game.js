@@ -18,10 +18,10 @@ function Game() {
   const setBrushSizeRef = useRef(null);
 
   const myPlayer = players.find(p => p.username === username) || {};
-  const opponentPlayers = players.filter(p => p.username !== username && (p.status === 'playing' || p.status === 'eliminated'));
-  
+  const opponentPlayers = players.filter(p => p.username !== username && (p.status === 'playing' || p.status === 'eliminated' || p.status === 'spectator'));
   const isGameOver = lobbyData?.gameStatus === 'completed';
   const isWinner = winner === username;
+  const isSpectator = myPlayer.status === 'spectator';
 
   useEffect(() => {
     if (!username || !lobbyData || (lobbyData.gameStatus !== 'active' && lobbyData.gameStatus !== 'completed')) {
@@ -121,10 +121,13 @@ function Game() {
         <div className="game-content">
           <div className={`game-board ${isDrawingMode ? 'drawing-mode' : ''}`}>
             <div className="player-section">
-              <div className={`player-card my-card ${username === targetPlayer ? 'is-target' : ''} ${myPlayer.status === 'eliminated' ? 'eliminated' : ''}`}>
+              <div className={`player-card my-card ${username === targetPlayer ? 'is-target' : ''} ${myPlayer.status === 'eliminated' ? 'eliminated' : ''} ${isSpectator ? 'spectator-card' : ''}`}>
                 {username === targetPlayer && !isGameOver && (
                   <span className="target-indicator">TARGETED</span>
                 )}
+
+                {isSpectator && (<span className="spectator-indicator">SPECTATOR</span>)}
+                
                 {myPlayer.status === 'eliminated' && (
                   <div className="eliminated-overlay">
                     <div className="eliminated-x">X</div>
@@ -132,7 +135,7 @@ function Game() {
                   </div>
                 )}
                 <h2>{username}</h2>
-                <div className="player-number">{myPlayer.number}</div>
+                {!isSpectator && <div className="player-number">{myPlayer.number}</div>}
                 
                 <div className="guess-history">
                   {guesses
@@ -150,10 +153,12 @@ function Game() {
 
             <div className="opponents-section">
               {opponentPlayers.map((opponent) => (
-                <div key={opponent.username} className={`opponent-card ${opponent.username === targetPlayer ? 'is-target' : ''} ${opponent.status === 'eliminated' ? 'eliminated' : ''}`}>
+                <div key={opponent.username} className={`opponent-card ${opponent.username === targetPlayer ? 'is-target' : ''} ${opponent.status === 'eliminated' ? 'eliminated' : ''} ${opponent.status === 'spectator' ? 'spectator-card' : ''}`}>
                   {opponent.username === targetPlayer && !isGameOver && opponent.status !== 'eliminated' && (
                     <span className="target-indicator">TARGETED</span>
                   )}
+
+                  {opponent.status === 'spectator' && (<span className="spectator-indicator">SPECTATOR</span>)}
                   
                   {opponent.status === 'eliminated' && (
                     <div className="eliminated-overlay">
