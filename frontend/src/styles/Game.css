@@ -255,6 +255,9 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 40%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .player-number {
@@ -449,6 +452,9 @@
   font-size: 0.9rem;
   color: #a0aec0;
   margin-right: auto;
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Leave game button */
@@ -529,6 +535,7 @@
   color: #ffffff;
   font-weight: 700;
   text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+  word-break: break-word;
 }
 
 .winner-message {
