@@ -211,7 +211,7 @@ function Game() {
 const WinnerModal = ({ winner, isYou, onLeaveGame, onReturnToLobby, lobbyId }) => {
   const { returnToLobby } = useGame();
 
-  const onReturnToLobby = () => {
+  const handleReturnToLobby = () => {
     returnToLobby(lobbyId);
     onReturnToLobby();
   };
@@ -227,7 +227,7 @@ const WinnerModal = ({ winner, isYou, onLeaveGame, onReturnToLobby, lobbyId }) =
             : `${winner} has won the game by being the last player standing!`}
         </p>
         <div className="winner-buttons">
-          <button className="return-to-lobby-button" onClick={onReturnToLobby}>
+          <button className="return-to-lobby-button" onClick={handleReturnToLobby}>
             Return to Lobby
           </button>
           <button className="leave-game-winner-button" onClick={onLeaveGame}>
