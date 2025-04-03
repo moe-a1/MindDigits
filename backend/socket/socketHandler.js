@@ -1,5 +1,5 @@
 import { isValidNumber, allPlayersReady, generateLobbyId, initializeTurnSystem } from '../utils/gameUtils.js';
-import { findLobby, disconnectPlayer, startGame, handlePlayerGuess } from '../utils/lobbyUtils.js';
+import { findLobby, disconnectPlayer, startGame, handlePlayerGuess, resetLobbyAfterGame } from '../utils/lobbyUtils.js';
 import { emitToLobby, emitSystemMessage, handleError } from '../utils/socketUtils.js';
 import Lobby from '../models/Lobby.js';
 
@@ -129,7 +129,7 @@ export default function setupSocketHandlers(io) {
         }
         
         emitToLobby(io, lobbyId, 'gameStarted', { players: lobby.players, currentTurn: lobby.currentTurn, targetPlayer: lobby.targetPlayer, gameStatus: lobby.gameStatus });
-        emitSystemMessage(io, lobbyId, 'gameStarted', `The game has started! ${lobby.targetPlayer}'s number is being targeted. It's ${lobby.currentTurn}'s turn to make a guess.`);
+        //emitSystemMessage(io, lobbyId, 'gameStarted', `The game has started! ${lobby.targetPlayer}'s number is being targeted. It's ${lobby.currentTurn}'s turn to make a guess.`);
       } catch (err) {
         handleError(socket, 'Failed to start game', err);
       }
@@ -213,6 +213,18 @@ export default function setupSocketHandlers(io) {
       if (!userData || !userData.username || !lobbyId) return;
       
       emitToLobby(io, lobbyId, 'chatMessage', { sender: userData.username, message });
+    });
+
+    socket.on('returnToLobby', async ({ lobbyId, username }) => {
+      try {
+        const lobby = await findLobby(socket, lobbyId);
+        if (!lobby) return;
+        
+        await resetLobbyAfterGame(io, lobby, username, socket);
+        
+      } catch (err) {
+        handleError(socket, 'Failed to return to lobby', err);
+      }
     });
 
     socket.on('disconnect', async () => {

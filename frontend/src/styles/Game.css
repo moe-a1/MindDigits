@@ -562,6 +562,24 @@
   transform: translateY(-2px);
 }
 
+.return-to-lobby-button {
+  background: #4fd1c5;
+  color: #1a202c;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-right: 10px;
+}
+
+.return-to-lobby-button:hover {
+  background: #38b2ac;
+  transform: translateY(-2px);
+}
+
 /* Responsive styles */
 @media (max-width: 992px) {
   .game-board {

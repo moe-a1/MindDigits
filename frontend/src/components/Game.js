@@ -201,14 +201,21 @@ function Game() {
         </div>
 
         {isGameOver && winner && (
-          <WinnerModal winner={winner} isYou={isWinner} onLeaveGame={onLeaveLobbyClick}/>
+          <WinnerModal winner={winner} isYou={isWinner} onLeaveGame={onLeaveLobbyClick} onReturnToLobby={() => navigate(`/lobby/${lobbyId}`)} lobbyId={lobbyId}/>
         )}
       </DrawingCanvas>
     </div>
   );
 }
 
-const WinnerModal = ({ winner, isYou, onLeaveGame }) => {
+const WinnerModal = ({ winner, isYou, onLeaveGame, onReturnToLobby, lobbyId }) => {
+  const { returnToLobby } = useGame();
+
+  const onReturnToLobby = () => {
+    returnToLobby(lobbyId);
+    onReturnToLobby();
+  };
+
   return (
     <div className="winner-modal-backdrop">
       <div className="winner-modal">
@@ -220,6 +227,9 @@ const WinnerModal = ({ winner, isYou, onLeaveGame }) => {
             : `${winner} has won the game by being the last player standing!`}
         </p>
         <div className="winner-buttons">
+          <button className="return-to-lobby-button" onClick={onReturnToLobby}>
+            Return to Lobby
+          </button>
           <button className="leave-game-winner-button" onClick={onLeaveGame}>
             Leave Game
           </button>

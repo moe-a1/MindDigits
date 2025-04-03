@@ -51,7 +51,7 @@ export function eliminatePlayer(io, lobby, fromPlayer, toPlayer, guessedNumber) 
     }
 
     emitToLobby(io, lobby.lobbyId, 'playerEliminated', { username: toPlayer, eliminatedBy: fromPlayer, players: lobby.players });
-    emitSystemMessage(io, lobby.lobbyId, 'playerEliminated', `${fromPlayer} correctly guessed ${toPlayer}'s number (${guessedNumber})! ${toPlayer} has been eliminated.`);
+    //emitSystemMessage(io, lobby.lobbyId, 'playerEliminated', `${fromPlayer} correctly guessed ${toPlayer}'s number (${guessedNumber})! ${toPlayer} has been eliminated.`);
 
     if (isGameOver(lobby))
         endGame(io, lobby);
@@ -101,7 +101,7 @@ export function endGame(io, lobby) {
     });
 
     emitToLobby(io, lobby.lobbyId, 'gameOver', { winner, lobby });
-    emitSystemMessage(io, lobby.lobbyId, 'gameOver', winner ? `Game over! ${winner} is the winner!` : 'Game over! No players remain.');
+    //emitSystemMessage(io, lobby.lobbyId, 'gameOver', winner ? `Game over! ${winner} is the winner!` : 'Game over! No players remain.');
 }
 
 export async function handlePlayerGuess(io, lobby, fromPlayer, toPlayer, guessedNumber) {
@@ -133,5 +133,45 @@ export async function handlePlayerGuess(io, lobby, fromPlayer, toPlayer, guessed
         console.error('Error handling guess:', err);
         return { error: 'Failed to process guess' };
     }
+}
+
+export async function resetLobbyAfterGame(io, lobby, username, socket) {
+    const playerIndex = lobby.players.findIndex(p => p.username === username);
+
+    if (playerIndex !== -1) {
+        lobby.players[playerIndex].status = 'waiting';
+        lobby.players[playerIndex].number = null;
+
+        if (lobby.gameStatus === 'completed') {
+            lobby.players.forEach(player => {
+                if (player.status === 'eliminated' || player.status === 'playing') {
+                    player.status = 'waiting';
+                    player.number = null;
+                }
+            });
+            
+            lobby.gameStatus = 'waiting';
+            lobby.targetPlayer = null;
+            lobby.targetSequence = [];
+            lobby.currentTurn = null;
+            lobby.guessingPlayers = [];
+            lobby.guessingOrders = {};
+            lobby.currentGuessingIndex = 0;
+            lobby.currentTargetIndex = 0;
+            lobby.currentRound = 1;
+            lobby.guesses = [];
+            
+            //emitSystemMessage(io, lobby.lobbyId, 'gameReset', 'The game has been reset. Submit your numbers to play again!');
+        }
+
+        await lobby.save();
+
+        const updatedLobby = await findLobby(socket, lobby.lobbyId);
+        emitToLobby(io, lobby.lobbyId, 'lobbyUpdated', updatedLobby.toObject());
+
+        return updatedLobby;
+    }
+
+    return lobby;
 }
 

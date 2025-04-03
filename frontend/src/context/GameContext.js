@@ -114,6 +114,11 @@ export function GameProvider({ children }) {
     socket.emit('getGameState', { lobbyId: lobbyData.lobbyId });
   };
 
+  const returnToLobby = (lobbyId) => {
+    if (!socket || !username) return;
+    socket.emit('returnToLobby', { lobbyId, username });
+  };
+
   useEffect(() => {
     if (!socket) return;
 
@@ -165,6 +170,13 @@ export function GameProvider({ children }) {
         setGuesses(data.guesses);
       }
     });
+    socket.on('lobbyUpdated', (data) => {
+      setLobbyData(data);
+      setPlayers(data.players || []);
+      setGuesses(data.guesses || []);
+      setCurrentTurn(data.currentTurn || '');
+      setTargetPlayer(data.targetPlayer || '');
+    });
 
     return () => {
       socket.off('playerJoinedLobby');
@@ -179,6 +191,7 @@ export function GameProvider({ children }) {
       socket.off('systemMessage');
       socket.off('chatMessage');
       socket.off('lobbyData');
+      socket.off('lobbyUpdated');
     };
   }, [socket]);
 
@@ -191,7 +204,8 @@ export function GameProvider({ children }) {
     winner,
     createLobby, joinLobby, getLobby, leaveLobby,
     submitSecretNumber, startGame, makeGuess,
-    sendChatMessage, getGameState
+    sendChatMessage, getGameState,
+    returnToLobby
   };
 
   return (
