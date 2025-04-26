@@ -9,6 +9,7 @@ MindDigits is an interactive multiplayer number guessing game where players try 
 - [Features](#features)
 - [Game Rules](#game-rules)
 - [Technology Stack](#technology-stack)
+- [Project Structure](#project-structure)
 
 ## Game Overview
 
@@ -64,3 +65,24 @@ MindDigits is built with the **MERN Stack** (MongoDB, Express, React, Node.js), 
 - **Real-time Communication**: Socket.IO implementing WebSockets for instant gameplay updates and chat
 - **Database**: MongoDB for data persistence with Mongoose
 - **Utilities**: UUID for generating unique lobby identifiers
+
+## Project Structure
+
+```
+MindDigits/
+├── frontend/              # React frontend application
+│   ├── public/            # Static assets
+│   ├── src/
+│   │   ├── components/    # React components
+│   │   ├── context/       # React context for state management
+│   │   ├── styles/        # CSS stylesheets
+│   │   └── utils/         # Utility functions
+│   └── package.json       # Frontend dependencies
+│
+└── backend/               # Node.js backend server
+    ├── models/            # MongoDB models
+    ├── socket/            # Socket.IO event handlers
+    ├── utils/             # Backend utility functions
+    ├── index.js           # Server entry point
+    └── package.json       # Backend dependencies
+```
